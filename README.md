@@ -1,5 +1,4 @@
-[![Build Status](https://secure.travis-ci.org/metrics-io/metrics-core.png)](http://travis-ci.org/metrics-io/metrics-core)
-
+[![Build Status](https://travis-ci.org/metrics-io/metrics-core.png?branch=master)](https://travis-ci.org/metrics-io/metrics-core)
 metrics-io
 =============
 
