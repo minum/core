@@ -1,3 +1,5 @@
+[![Build Status](https://secure.travis-ci.org/metrics-io/metrics-core.png)](http://travis-ci.org/metrics-io/metrics-core)
+
 metrics-io
 =============
 
