@@ -1,10 +1,5 @@
 /*
-    {
-        name: "String",
-        source: "String",
-        value: "Number",
-        date: Date
-    }
+    mongo-shell script to generate set of metrics
 */
 
 var metrics = {
@@ -29,7 +24,8 @@ for(var metricName in metrics) {
                 d: date.getUTCDate(),
                 h: date.getUTCHours(),
                 m: date.getUTCMinutes(),
-                s: roundToNear(date.getUTCSeconds(), 5) //with 5 sec resolution
+                s5: roundToNear(date.getUTCSeconds(), 5), //with 5 sec resolution
+                s: date.getUTCSeconds()
             };
 
             var metric = {

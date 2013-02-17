@@ -1,3 +1,6 @@
+/*
+    mongo-shell script to try aggregation
+*/
 var result = db.metrics.aggregate([
     { $match: { name: "chunk-streams" } }, //sort by date too
     { $group: 
@@ -9,7 +12,7 @@ var result = db.metrics.aggregate([
                     d: "$resolution.d",
                     h: "$resolution.h",
                     m: "$resolution.m",
-                    s: "$resolution.s"
+                    s5: "$resolution.s5"
                 },
                 source: "$source"
             },
