@@ -1,8 +1,7 @@
-[![Build Status](https://travis-ci.org/metrics-io/core.png?branch=master)](https://travis-ci.org/metrics-io/core)
-metrics-io
+minum [![Build Status](https://travis-ci.org/minum/core.png)](https://travis-ci.org/minum/core)
 =============
 
-When its comes to metrics, aggregations plays a huge role. If that fails, then there is no use of collecting metrics. Here is the how `metrics-io` do it correctly.
+When its comes to metrics, aggregations plays a huge role. If that fails, then there is no use of collecting metrics. Here is the how `minum` do it correctly.
 
 * There are sources who generate metrics
 * metrics will be collected with the awareness of the source
@@ -15,9 +14,9 @@ When its comes to metrics, aggregations plays a huge role. If that fails, then t
 
 ~~~js
 var MONGODB_URL = "mongodb://localhost/test";
-var metrics = require('metrics-io')(MONGODB_URL);
+var minum = require('minum')(MONGODB_URL);
 
-metrics.track('no-of-users', 344, 'my-source', function(err) {
+minum.track('no-of-users', 344, 'my-source', function(err) {
 
 });
 ~~~
@@ -45,9 +44,9 @@ metrics.track('no-of-users', 344, 'my-source', function(err) {
 ~~~js
 	
 var MONGODB_URL = "mongodb://localhost/test";
-var metrics = require('metrics-io')(MONGODB_URL);
+var minum = require('minum')(MONGODB_URL);
 
-metrics.aggregate('no-of-users', 'minute', 'avg', 'sum', {date: { $gte: 1361030882576 }}, function(err, result) {
+minum.aggregate('no-of-users', 'minute', 'avg', 'sum', {date: { $gte: 1361030882576 }}, function(err, result) {
 
 });
 ~~~
