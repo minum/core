@@ -60,6 +60,18 @@ Only aggregate values, source will not be aggregated and return values aggregati
     
     Metrics.aggregate = function(name, resolution, valueAggregator, sourceAggregator, query, callback){}
 
+##### identifySources
+
+identify sources available for a given metric
+
+        @param {String} name - name of the metric
+        @param {Object} query - mongodb query for filtering out metrics
+            only supports date only
+        @param {Function} callback - callback function
+            callback(err, resultsArray)
+
+    Metrics.indentifySources = function (name, query, callback) {}
+
 #### Example
 
 ~~~js

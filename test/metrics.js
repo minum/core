@@ -199,6 +199,69 @@ suite('Metrics', function() {
             }
         }));
     });
+
+    suite('.identifySources()', function() {
+
+        test('without query', _clean(function(done) {
+
+            var metrics = [
+                {name: 'mp3', value: 10, source: 'b1', date: new Date('2012 01 01 10:45 GMT')},
+                {name: 'mp3', value: 8, source: 'b2', date: new Date('2012 01 01 10:45 GMT')},
+                {name: 'mp3', value: 8, source: 'b1', date: new Date('2012 01 01 10:45 GMT')},
+                {name: 'mp3', value: 6, source: 'b2', date: new Date('2012 01 01 10:45 GMT')},
+                {name: 'other', value: 6, source: 'b2', date: new Date('2012 01 01 10:46 GMT')}
+            ];
+
+            var mm = metricsIo(MONGO_URL, COLLECTION);
+
+            addBulkMetrics(mm, metrics, function(err) {
+
+                assert.equal(err, undefined);
+                mm.identifySources('mp3', validateMetrics);
+            });
+
+            function validateMetrics(err, results) {
+
+                assert.equal(err, null);
+                results.sort(function(a, b) {
+                    return a > b;
+                });
+                assert.deepEqual(results, ['b1', 'b2']);
+                done();
+            }
+
+        }));
+
+        test('with query', _clean(function(done) {
+
+            var metrics = [
+                {name: 'mp3', value: 10, source: 'b1', date: new Date('2012 01 01 10:45 GMT')},
+                {name: 'mp3', value: 8, source: 'b2', date: new Date('2013 01 01 10:45 GMT')},
+                {name: 'mp3', value: 8, source: 'b1', date: new Date('2012 01 01 10:45 GMT')},
+                {name: 'mp3', value: 6, source: 'b2', date: new Date('2013 01 01 10:45 GMT')},
+                {name: 'other', value: 6, source: 'b2', date: new Date('2012 01 01 10:46 GMT')}
+            ];
+
+            var mm = metricsIo(MONGO_URL, COLLECTION);
+
+            addBulkMetrics(mm, metrics, function(err) {
+
+                assert.equal(err, undefined);
+                mm.identifySources('mp3', {date: {$lt: new Date('2012 12 31').getTime()}}, validateMetrics);
+            });
+
+            function validateMetrics(err, results) {
+
+                assert.equal(err, null);
+                results.sort(function(a, b) {
+                    return a > b;
+                });
+                assert.deepEqual(results, ['b1']);
+                done();
+            }
+
+        }));
+    });
 });
 
 function addBulkMetrics (metricsTracker, metrics, callback) {
