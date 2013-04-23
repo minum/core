@@ -137,6 +137,68 @@ suite('Metrics', function() {
             }
         }));
     });
+
+    suite('.aggregateOnlyValues()', function() {
+
+        test('metric avg, all sources, min resolution', _clean(function(done) {
+
+            var metrics = [
+                {name: 'mp3', value: 10, source: 'b1', date: new Date('2012 01 01 10:45 GMT')},
+                {name: 'mp3', value: 8, source: 'b2', date: new Date('2012 01 01 10:45 GMT')},
+                {name: 'mp3', value: 8, source: 'b1', date: new Date('2012 01 01 10:45 GMT')},
+                {name: 'mp3', value: 6, source: 'b2', date: new Date('2012 01 01 10:45 GMT')},
+                {name: 'other', value: 6, source: 'b2', date: new Date('2012 01 01 10:46 GMT')}
+            ];
+
+            var mm = metricsIo(MONGO_URL, COLLECTION);
+
+            addBulkMetrics(mm, metrics, function(err) {
+
+                assert.ifError(err);
+                mm.aggregateOnlyValues('mp3', 'minute', 'avg', [], validateMetrics);
+            });
+
+            function validateMetrics(err, metrics) {
+
+                assert.ifError(err);
+                var expectedResult = [
+                    { _id: { source: 'b1', date: { y: 2012, mo: 0, m: 45, h: 10, d: 1 }}, value: 9 },
+                    { _id: { source: 'b2', date: { y: 2012, mo: 0, m: 45, h: 10, d: 1 }}, value: 7 },
+                ];
+                assert.deepEqual(metrics, expectedResult);
+                done();
+            }
+        }));
+
+        test('metric sum, only source b1, min resolution, 2 results', _clean(function(done) {
+
+            var metrics = [
+                {name: 'mp3', value: 10, source: 'b1', date: new Date('2012 01 01 10:45 GMT')},
+                {name: 'mp3', value: 8, source: 'b2', date: new Date('2012 01 01 10:45 GMT')},
+                {name: 'mp3', value: 8, source: 'b1', date: new Date('2012 01 01 10:45 GMT')},
+                {name: 'mp3', value: 6, source: 'b2', date: new Date('2012 01 01 10:45 GMT')},
+                {name: 'other', value: 6, source: 'b2', date: new Date('2012 01 01 10:46 GMT')}
+            ];
+
+            var mm = metricsIo(MONGO_URL, COLLECTION);
+
+            addBulkMetrics(mm, metrics, function(err) {
+
+                assert.equal(err, undefined);
+                mm.aggregateOnlyValues('mp3', 'minute', 'sum', ['b1'], validateMetrics);
+            });
+
+            function validateMetrics(err, metrics) {
+
+                assert.equal(err, null);
+                var expectedResult = [
+                    { _id: { source: 'b1', date: { y: 2012, mo: 0, m: 45, h: 10, d: 1 }}, value: 18 }
+                ];
+                assert.deepEqual(metrics, expectedResult);
+                done();
+            }
+        }));
+    });
 });
 
 function addBulkMetrics (metricsTracker, metrics, callback) {
